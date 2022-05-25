@@ -60,11 +60,15 @@ export class BasicComponent implements OnInit, AfterViewInit {
 
     this.vehicle = new Vehicle(x, y, this.WIDTH, this.HEIGHT);
     this.triangle = new fabric.Triangle({
-      top: y - this.HEIGHT / 2,
-      left: x - this.WIDTH / 2,
+      top: y,
+      left: x,
       width: this.WIDTH,
       height: this.HEIGHT,
       fill: 'red',
+      selectable: false,
+      originX: 'center',
+      originY: 'top',
+      centeredRotation: true,
     });
 
     this.fabricCanvas.add(this.triangle);

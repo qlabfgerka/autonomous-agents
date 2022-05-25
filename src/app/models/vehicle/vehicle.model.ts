@@ -1,4 +1,5 @@
 import { Vector } from '../vector/vector.model';
+import { fabric } from 'fabric';
 
 export class Vehicle {
   location: Vector;
@@ -39,9 +40,9 @@ export class Vehicle {
   public seek(target: Vector): void {
     const desired: Vector = Vector.sub(target, this.location);
     let steer: Vector;
-    desired.normalize();
-    //desired.multiply(0.05);
-    desired.multiply(this.maxSpeed);
+    //desired.normalize();
+    desired.multiply(0.05);
+    //desired.multiply(this.maxSpeed);
 
     steer = Vector.sub(desired, this.velocity);
     steer.limit(this.maxForce);
@@ -50,8 +51,8 @@ export class Vehicle {
 
   public display(triangle: fabric.Triangle): void {
     const theta: number = this.velocity.heading() + Math.PI / 2;
-    triangle.top = this.location.y - this.height / 2;
-    triangle.left = this.location.x - this.height / 2;
-    triangle.rotate((theta * 180) / Math.PI);
+    triangle.angle = (theta * 180) / Math.PI;
+    triangle.top = this.location.y;
+    triangle.left = this.location.x;
   }
 }
