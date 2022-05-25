@@ -25,6 +25,7 @@ export class BasicComponent implements OnInit, AfterViewInit {
 
   private readonly WIDTH: number = 25;
   private readonly HEIGHT: number = 50;
+  private mousePosition!: fabric.Point;
 
   constructor() {}
 
@@ -39,17 +40,10 @@ export class BasicComponent implements OnInit, AfterViewInit {
     });
 
     this.fabricCanvas.on('mouse:move', (e) => {
-      if (!this.vehicle) return;
-      if (this.interval) clearInterval(this.interval);
+      if (!this.mousePosition) return;
 
-      this.interval = setInterval(() => {
-        this.vehicle.seek(
-          new Vector(e.absolutePointer?.x!, e.absolutePointer?.y!)
-        );
-        this.vehicle.update();
-        this.vehicle.display(this.triangle);
-        this.updateTriangle();
-      }, 10);
+      this.mousePosition.x = e.absolutePointer?.x!;
+      this.mousePosition.y = e.absolutePointer?.y!;
     });
   }
 
@@ -57,6 +51,8 @@ export class BasicComponent implements OnInit, AfterViewInit {
 
   public addTriangle(x: number, y: number): void {
     this.clear();
+
+    this.mousePosition = new fabric.Point(x, y);
 
     this.vehicle = new Vehicle(x, y, this.WIDTH, this.HEIGHT);
     this.triangle = new fabric.Triangle({
@@ -72,6 +68,13 @@ export class BasicComponent implements OnInit, AfterViewInit {
     });
 
     this.fabricCanvas.add(this.triangle);
+
+    this.interval = setInterval(() => {
+      this.vehicle.seek(new Vector(this.mousePosition.x, this.mousePosition.y));
+      this.vehicle.update();
+      this.vehicle.display(this.triangle);
+      this.updateTriangle();
+    }, 10);
   }
 
   public clear(): void {
