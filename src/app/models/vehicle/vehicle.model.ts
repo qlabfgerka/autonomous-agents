@@ -79,7 +79,7 @@ export class Vehicle {
     const circle: Vector = this.velocity.clone();
     let offset: Vector;
     let target: Vector;
-    let rand: number = this.getRandomArbitrary(-0.3, 0.3);
+    let rand: number = this.getRandomArbitrary(0, 6.28319);
     let h: number = this.velocity.heading();
     circle.normalize();
     circle.multiply(80);
