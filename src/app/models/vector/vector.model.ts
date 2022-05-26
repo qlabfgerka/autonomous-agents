@@ -17,12 +17,12 @@ export class Vector {
     this.x -= v.x;
   }
 
-  public multiply(n: number): void {
+  public mult(n: number): void {
     this.y *= n;
     this.x *= n;
   }
 
-  public divide(n: number): void {
+  public div(n: number): void {
     this.y /= n;
     this.x /= n;
   }
@@ -33,13 +33,13 @@ export class Vector {
 
   public normalize(): void {
     const mag: number = this.mag();
-    if (mag != 0) this.divide(mag);
+    if (mag != 0) this.div(mag);
   }
 
   public limit(max: number): void {
-    if (this.mag() > 10 * 10) {
+    if (this.mag() > max * max) {
       this.normalize();
-      this.multiply(max);
+      this.mult(max);
     }
   }
 
@@ -51,11 +51,28 @@ export class Vector {
     return new Vector(this.x, this.y);
   }
 
+  public dist(vector: Vector): number {
+    const dx: number = this.x - vector.x;
+    const dy: number = this.y - vector.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  public setMag(mag: number): void {
+    this.normalize();
+    this.mult(mag);
+  }
+
   public static sub(first: Vector, second: Vector): Vector {
     return new Vector(first.x - second.x, first.y - second.y);
   }
 
   public static add(first: Vector, second: Vector): Vector {
     return new Vector(first.x + second.x, first.y + second.y);
+  }
+
+  public static dist(first: Vector, second: Vector): number {
+    const dx: number = first.x - second.x;
+    const dy: number = first.y - second.y;
+    return Math.sqrt(dx * dx + dy * dy);
   }
 }
