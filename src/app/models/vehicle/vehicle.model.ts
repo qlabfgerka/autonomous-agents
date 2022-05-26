@@ -53,17 +53,17 @@ export class Vehicle {
     this.applyForce(steer);
   }
 
-  public boundaries(): void {
+  public boundaries(height: number, width: number): void {
     let desired: Vector = null!;
 
     if (this.location.x < 50)
       desired = new Vector(this.maxSpeed, this.velocity.y);
-    else if (this.location.x > this.width - 50)
+    else if (this.location.x > width - 50)
       desired = new Vector(-this.maxSpeed, this.velocity.y);
 
     if (this.location.y < 50)
       desired = new Vector(this.velocity.x, this.maxSpeed);
-    else if (this.location.y > this.height - 50)
+    else if (this.location.y > height - 50)
       desired = new Vector(this.velocity.x, -this.maxSpeed);
 
     if (desired) {

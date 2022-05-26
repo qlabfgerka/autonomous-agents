@@ -61,7 +61,10 @@ export class BoundariesComponent implements OnInit, AfterViewInit {
     this.fabricCanvas.add(this.triangle);
 
     this.interval = setInterval(() => {
-      this.vehicle.boundaries();
+      this.vehicle.boundaries(
+        this.fabricCanvas.height!,
+        this.fabricCanvas.width!
+      );
       this.vehicle.update();
       this.vehicle.display(this.triangle);
       this.fabricCanvas.renderAll();
