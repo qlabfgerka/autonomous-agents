@@ -57,6 +57,11 @@ export class Vector {
     return Math.sqrt(dx * dx + dy * dy);
   }
 
+  public setMag(mag: number): void {
+    this.normalize();
+    this.multiply(mag);
+  }
+
   public static sub(first: Vector, second: Vector): Vector {
     return new Vector(first.x - second.x, first.y - second.y);
   }
