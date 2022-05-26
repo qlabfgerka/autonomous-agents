@@ -18,6 +18,13 @@ const routes: Routes = [
           import('./random/random.module').then((m) => m.RandomModule),
       },
       {
+        path: 'boundaries',
+        loadChildren: () =>
+          import('./boundaries/boundaries.module').then(
+            (m) => m.BoundariesModule
+          ),
+      },
+      {
         path: 'flock',
         loadChildren: () =>
           import('./flock/flock.module').then((m) => m.FlockModule),

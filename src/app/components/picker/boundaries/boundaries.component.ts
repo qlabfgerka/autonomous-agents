@@ -9,11 +9,11 @@ import { Vehicle } from 'src/app/models/vehicle/vehicle.model';
 import { fabric } from 'fabric';
 
 @Component({
-  selector: 'app-random',
-  templateUrl: './random.component.html',
-  styleUrls: ['./random.component.scss'],
+  selector: 'app-boundaries',
+  templateUrl: './boundaries.component.html',
+  styleUrls: ['./boundaries.component.scss'],
 })
-export class RandomComponent implements OnInit {
+export class BoundariesComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas', { static: false })
   private canvas!: ElementRef<HTMLCanvasElement>;
 
@@ -61,9 +61,8 @@ export class RandomComponent implements OnInit {
     this.fabricCanvas.add(this.triangle);
 
     this.interval = setInterval(() => {
-      this.vehicle.wander();
+      this.vehicle.boundaries();
       this.vehicle.update();
-      this.vehicle.borders(this.fabricCanvas.height!, this.fabricCanvas.width!);
       this.vehicle.display(this.triangle);
       this.fabricCanvas.renderAll();
     }, 10);

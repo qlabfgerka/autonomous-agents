@@ -73,16 +73,12 @@ export class BasicComponent implements OnInit, AfterViewInit {
       this.vehicle.seek(new Vector(this.mousePosition.x, this.mousePosition.y));
       this.vehicle.update();
       this.vehicle.display(this.triangle);
-      this.updateTriangle();
+      this.fabricCanvas.renderAll();
     }, 10);
   }
 
   public clear(): void {
     if (this.interval) clearInterval(this.interval);
     this.fabricCanvas.clear();
-  }
-
-  private updateTriangle(): void {
-    this.fabricCanvas.add(this.triangle);
   }
 }
