@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -14,7 +15,7 @@ import { Vehicle } from 'src/app/models/vehicle/vehicle.model';
   templateUrl: './basic.component.html',
   styleUrls: ['./basic.component.scss'],
 })
-export class BasicComponent implements OnInit, AfterViewInit {
+export class BasicComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: false })
   private canvas!: ElementRef<HTMLCanvasElement>;
 
@@ -28,6 +29,11 @@ export class BasicComponent implements OnInit, AfterViewInit {
   private mousePosition!: fabric.Point;
 
   constructor() {}
+
+  ngOnDestroy(): void {
+    if (this.interval) clearInterval(this.interval);
+    if (this.fabricCanvas) this.fabricCanvas.clear();
+  }
 
   ngAfterViewInit(): void {
     this.fabricCanvas = new fabric.Canvas('canvas', {

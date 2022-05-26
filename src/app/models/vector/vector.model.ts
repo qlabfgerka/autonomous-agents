@@ -51,11 +51,23 @@ export class Vector {
     return new Vector(this.x, this.y);
   }
 
+  public dist(vector: Vector): number {
+    const dx: number = this.x - vector.x;
+    const dy: number = this.y - vector.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
   public static sub(first: Vector, second: Vector): Vector {
     return new Vector(first.x - second.x, first.y - second.y);
   }
 
   public static add(first: Vector, second: Vector): Vector {
     return new Vector(first.x + second.x, first.y + second.y);
+  }
+
+  public static dist(first: Vector, second: Vector): number {
+    const dx: number = first.x - second.x;
+    const dy: number = first.y - second.y;
+    return Math.sqrt(dx * dx + dy * dy);
   }
 }

@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -13,7 +14,7 @@ import { fabric } from 'fabric';
   templateUrl: './random.component.html',
   styleUrls: ['./random.component.scss'],
 })
-export class RandomComponent implements OnInit {
+export class RandomComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: false })
   private canvas!: ElementRef<HTMLCanvasElement>;
 
@@ -26,6 +27,11 @@ export class RandomComponent implements OnInit {
   private readonly HEIGHT: number = 50;
 
   constructor() {}
+
+  ngOnDestroy(): void {
+    if (this.interval) clearInterval(this.interval);
+    if (this.fabricCanvas) this.fabricCanvas.clear();
+  }
 
   ngAfterViewInit(): void {
     this.fabricCanvas = new fabric.Canvas('canvas', {

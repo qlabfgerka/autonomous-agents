@@ -1,5 +1,6 @@
 import { Vector } from '../vector/vector.model';
 import { fabric } from 'fabric';
+import { VehicleWrapper } from './vehicle-wrapper.model';
 
 export class Vehicle {
   location: Vector;
@@ -28,6 +29,13 @@ export class Vehicle {
 
   public setVelocity(velx: number, vely: number): void {
     this.velocity = new Vector(velx, vely);
+  }
+
+  public setRandomVelocity(): void {
+    this.velocity = new Vector(
+      this.getRandomIntInclusive(-5, 5),
+      this.getRandomIntInclusive(-5, 5)
+    );
   }
 
   public applyForce(force: Vector): void {
@@ -104,7 +112,42 @@ export class Vehicle {
     if (this.location.y < 0) this.location.y = height;
   }
 
+  public seperate(vehicles: Array<VehicleWrapper>): void {
+    const seperationDistance: number = vehicles[0].vehicle.height;
+    let sum: Vector = new Vector(0, 0);
+    let count: number = 0;
+    let diff: Vector;
+    let steer: Vector;
+    let d: number;
+
+    for (const wrapper of vehicles) {
+      d = Vector.dist(this.location, wrapper.vehicle.location);
+      if (d > 0 && d < seperationDistance) {
+        diff = Vector.sub(this.location, wrapper.vehicle.location);
+        diff.normalize();
+        diff.divide(d);
+        sum.add(diff);
+        ++count;
+      }
+    }
+
+    if (count > 0) {
+      sum.divide(count);
+      sum.normalize();
+      sum.multiply(this.maxSpeed);
+      steer = Vector.sub(sum, this.velocity);
+      steer.limit(this.maxForce);
+      this.applyForce(steer);
+    }
+  }
+
   private getRandomArbitrary(min: number, max: number) {
     return Math.random() * (max - min) + min;
+  }
+
+  private getRandomIntInclusive(min: number, max: number) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }
 }
