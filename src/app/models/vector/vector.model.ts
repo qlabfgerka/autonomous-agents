@@ -47,7 +47,15 @@ export class Vector {
     return Math.atan2(this.y, this.x);
   }
 
+  public clone(): Vector {
+    return new Vector(this.x, this.y);
+  }
+
   public static sub(first: Vector, second: Vector): Vector {
     return new Vector(first.x - second.x, first.y - second.y);
+  }
+
+  public static add(first: Vector, second: Vector): Vector {
+    return new Vector(first.x + second.x, first.y + second.y);
   }
 }

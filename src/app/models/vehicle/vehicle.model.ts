@@ -26,6 +26,10 @@ export class Vehicle {
     this.height = height;
   }
 
+  public setVelocity(velx: number, vely: number): void {
+    this.velocity = new Vector(velx, vely);
+  }
+
   public applyForce(force: Vector): void {
     this.acceleration.add(force);
   }
@@ -49,10 +53,58 @@ export class Vehicle {
     this.applyForce(steer);
   }
 
+  public boundaries(height: number, width: number): void {
+    let desired: Vector = null!;
+
+    if (this.location.x < 50)
+      desired = new Vector(this.maxSpeed, this.velocity.y);
+    else if (this.location.x > width - 50)
+      desired = new Vector(-this.maxSpeed, this.velocity.y);
+
+    if (this.location.y < 50)
+      desired = new Vector(this.velocity.x, this.maxSpeed);
+    else if (this.location.y > height - 50)
+      desired = new Vector(this.velocity.x, -this.maxSpeed);
+
+    if (desired) {
+      desired.normalize();
+      desired.multiply(this.maxSpeed);
+      const steer: Vector = Vector.sub(desired, this.velocity);
+      steer.limit(this.maxForce);
+      this.applyForce(steer);
+    }
+  }
+
+  public wander(): void {
+    const circle: Vector = this.velocity.clone();
+    let offset: Vector;
+    let target: Vector;
+    let rand: number = this.getRandomArbitrary(0, 6.28319);
+    let h: number = this.velocity.heading();
+    circle.normalize();
+    circle.multiply(80);
+    circle.add(this.location);
+
+    offset = new Vector(25 * Math.cos(rand + h), 25 * Math.sin(rand + h));
+    target = Vector.add(circle, offset);
+    this.seek(target);
+  }
+
   public display(triangle: fabric.Triangle): void {
     const theta: number = this.velocity.heading() + Math.PI / 2;
     triangle.angle = (theta * 180) / Math.PI;
     triangle.top = this.location.y;
     triangle.left = this.location.x;
+  }
+
+  public borders(height: number, width: number): void {
+    if (this.location.x > width) this.location.x = this.width;
+    if (this.location.x < this.width) this.location.x = width;
+    if (this.location.y > height) this.location.y = this.height;
+    if (this.location.y < 0) this.location.y = height;
+  }
+
+  private getRandomArbitrary(min: number, max: number) {
+    return Math.random() * (max - min) + min;
   }
 }
