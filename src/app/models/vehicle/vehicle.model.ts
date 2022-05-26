@@ -1,5 +1,5 @@
-import { Vector } from '../vector/vector.model';
 import { fabric } from 'fabric';
+import { Vector } from '../vector/vector.model';
 import { VehicleWrapper } from './vehicle-wrapper.model';
 
 export class Vehicle {
@@ -46,14 +46,14 @@ export class Vehicle {
     this.velocity.add(this.acceleration);
     this.velocity.limit(this.maxSpeed);
     this.location.add(this.velocity);
-    this.acceleration.multiply(0);
+    this.acceleration.mult(0);
   }
 
   public seek(target: Vector): void {
     const desired: Vector = Vector.sub(target, this.location);
     let steer: Vector;
     //desired.normalize();
-    desired.multiply(0.05);
+    desired.mult(0.05);
     //desired.multiply(this.maxSpeed);
 
     steer = Vector.sub(desired, this.velocity);
@@ -65,7 +65,7 @@ export class Vehicle {
     const desired: Vector = Vector.sub(target, this.location);
     let steer: Vector;
     desired.normalize();
-    desired.multiply(this.maxSpeed);
+    desired.mult(this.maxSpeed);
 
     steer = Vector.sub(desired, this.velocity);
     steer.limit(this.maxForce);
@@ -87,7 +87,7 @@ export class Vehicle {
 
     if (desired) {
       desired.normalize();
-      desired.multiply(this.maxSpeed);
+      desired.mult(this.maxSpeed);
       const steer: Vector = Vector.sub(desired, this.velocity);
       steer.limit(this.maxForce);
       this.applyForce(steer);
@@ -101,7 +101,7 @@ export class Vehicle {
     let rand: number = this.getRandomArbitrary(0, 6.28319);
     let h: number = this.velocity.heading();
     circle.normalize();
-    circle.multiply(80);
+    circle.mult(80);
     circle.add(this.location);
 
     offset = new Vector(25 * Math.cos(rand + h), 25 * Math.sin(rand + h));
@@ -124,7 +124,7 @@ export class Vehicle {
   }
 
   public seperate(vehicles: Array<VehicleWrapper>): Vector {
-    const seperationDistance: number = 50;
+    const seperationDistance: number = 75;
     const sum: Vector = new Vector(0, 0);
     let steer: Vector = new Vector(0, 0);
     let count: number = 0;
@@ -136,16 +136,16 @@ export class Vehicle {
       if (d > 0 && d < seperationDistance) {
         diff = Vector.sub(this.location, wrapper.vehicle.location);
         diff.normalize();
-        diff.divide(d);
+        diff.div(d);
         sum.add(diff);
         ++count;
       }
     }
 
     if (count > 0) {
-      sum.divide(count);
+      sum.div(count);
       sum.normalize();
-      sum.multiply(this.maxSpeed);
+      sum.mult(this.maxSpeed);
       steer = Vector.sub(sum, this.velocity);
       steer.limit(this.maxForce);
     }
@@ -154,7 +154,7 @@ export class Vehicle {
   }
 
   public align(vehicles: Array<VehicleWrapper>): Vector {
-    const neighbourDistance: number = 200;
+    const neighbourDistance: number = 100;
     const sum: Vector = new Vector(0, 0);
     let count: number = 0;
     let steer: Vector;
@@ -169,9 +169,9 @@ export class Vehicle {
     }
 
     if (count > 0) {
-      sum.divide(count);
+      sum.div(count);
       sum.normalize();
-      sum.multiply(this.maxSpeed);
+      sum.mult(this.maxSpeed);
 
       steer = Vector.sub(sum, this.velocity);
       steer.limit(this.maxForce);
@@ -182,7 +182,7 @@ export class Vehicle {
   }
 
   public cohesion(vehicles: Array<VehicleWrapper>): Vector {
-    const neighbourDistance: number = 200;
+    const neighbourDistance: number = 100;
     const sum: Vector = new Vector(0, 0);
     let count: number = 0;
     let d: number;
@@ -196,9 +196,7 @@ export class Vehicle {
     }
 
     if (count > 0) {
-      console.log(sum);
-      sum.divide(count);
-      console.log(sum);
+      sum.div(count);
       return this.search(sum);
     } else {
       return new Vector(0, 0);
@@ -206,15 +204,15 @@ export class Vehicle {
   }
 
   public flock(vehicles: Array<VehicleWrapper>): void {
-    //const seperation: Vector = this.seperate(vehicles);
+    const seperation: Vector = this.seperate(vehicles);
     const alignment: Vector = this.align(vehicles);
-    //const cohesion: Vector = this.cohesion(vehicles);
-    //seperation.multiply(1.5);
-    alignment.multiply(1);
-    //cohesion.multiply(1);
-    //this.applyForce(seperation);
+    const cohesion: Vector = this.cohesion(vehicles);
+    seperation.mult(1.5);
+    alignment.mult(1);
+    cohesion.mult(1);
+    this.applyForce(seperation);
     this.applyForce(alignment);
-    //this.applyForce(cohesion);
+    this.applyForce(cohesion);
   }
 
   private getRandomArbitrary(min: number, max: number) {

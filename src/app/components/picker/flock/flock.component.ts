@@ -43,6 +43,19 @@ export class FlockComponent implements OnInit, AfterViewInit, OnDestroy {
     this.fabricCanvas.on('mouse:down', (e) => {
       this.addTriangle(e.absolutePointer!.x!, e.absolutePointer!.y!);
     });
+
+    this.interval = setInterval(() => {
+      for (const wrapper of this.vehicles) {
+        wrapper.vehicle.flock(this.vehicles);
+        wrapper.vehicle.update();
+        wrapper.vehicle.borders(
+          this.fabricCanvas.height!,
+          this.fabricCanvas.width!
+        );
+        wrapper.vehicle.display(wrapper.triangle);
+        this.fabricCanvas.renderAll();
+      }
+    }, 10);
   }
 
   ngOnInit(): void {}
@@ -71,26 +84,5 @@ export class FlockComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.interval) clearInterval(this.interval);
     this.fabricCanvas.clear();
     this.vehicles = new Array<VehicleWrapper>();
-  }
-
-  public start(): void {
-    if (this.interval) clearInterval(this.interval);
-
-    this.interval = setInterval(() => {
-      this.step();
-    }, 10);
-  }
-
-  public step(): void {
-    for (const wrapper of this.vehicles) {
-      wrapper.vehicle.flock(this.vehicles);
-      wrapper.vehicle.update();
-      wrapper.vehicle.borders(
-        this.fabricCanvas.height!,
-        this.fabricCanvas.width!
-      );
-      wrapper.vehicle.display(wrapper.triangle);
-      this.fabricCanvas.renderAll();
-    }
   }
 }
