@@ -75,4 +75,8 @@ export class Vector {
     const dy: number = first.y - second.y;
     return Math.sqrt(dx * dx + dy * dy);
   }
+
+  public static dot(first: Vector, second: Vector): number {
+    return first.x * second.x + first.y * second.y;
+  }
 }

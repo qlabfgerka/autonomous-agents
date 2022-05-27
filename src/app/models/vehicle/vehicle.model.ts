@@ -14,6 +14,8 @@ export class Vehicle {
   width: number;
   height: number;
 
+  static visibilityAngle: number = 60;
+
   constructor(x: number, y: number, width: number, height: number) {
     this.location = new Vector(x, y);
     this.velocity = new Vector(0, 0);
@@ -189,7 +191,7 @@ export class Vehicle {
 
     for (const wrapper of vehicles) {
       d = Vector.dist(this.location, wrapper.vehicle.location);
-      if (d > 0 && d < neighbourDistance) {
+      if (d > 0 && d < neighbourDistance && this.isVisible(wrapper)) {
         sum.add(wrapper.vehicle.location);
         ++count;
       }
@@ -201,6 +203,22 @@ export class Vehicle {
     } else {
       return new Vector(0, 0);
     }
+  }
+
+  public isVisible(vehicle: VehicleWrapper): boolean {
+    const vehicleFacing: Vector = vehicle.vehicle.velocity.clone();
+    const vehiclePosition: Vector = vehicle.vehicle.location.clone();
+    const position: Vector = this.location.clone();
+    const v: Vector = Vector.sub(position, vehiclePosition);
+    let theta: number;
+
+    vehicleFacing.normalize();
+    v.normalize();
+
+    theta = Math.acos(Vector.dot(vehicleFacing, v));
+    theta = (theta * 180) / Math.PI;
+
+    return !(theta > Vehicle.visibilityAngle / 2);
   }
 
   public flock(vehicles: Array<VehicleWrapper>): void {
